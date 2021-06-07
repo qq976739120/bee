@@ -6,8 +6,6 @@ package postage_test
 
 import (
 	"bytes"
-	crand "crypto/rand"
-	"io"
 	"testing"
 
 	"github.com/ethersphere/bee/pkg/crypto"
@@ -19,7 +17,7 @@ import (
 
 // TestStampMarshalling tests the idempotence  of binary marshal/unmarshals for Stamps.
 func TestStampMarshalling(t *testing.T) {
-	sExp := newStamp(t)
+	sExp := postagetesting.MustNewStamp()
 	buf, _ := sExp.MarshalBinary()
 	if len(buf) != postage.StampSize {
 		t.Fatalf("invalid length for serialised stamp. expected %d, got  %d", postage.StampSize, len(buf))
@@ -113,26 +111,4 @@ func TestValidStamp(t *testing.T) {
 	if ch.Immutable() != b.Immutable {
 		t.Fatalf("invalid batch immutablility added on chunk exp %t got %t", b.Immutable, ch.Immutable())
 	}
-}
-
-func newStamp(t *testing.T) *postage.Stamp {
-	const idSize = 32
-	const indexSize = 8
-	const signatureSize = 65
-
-	id := make([]byte, idSize)
-	if _, err := io.ReadFull(crand.Reader, id); err != nil {
-		panic(err)
-	}
-
-	index := make([]byte, indexSize)
-	if _, err := io.ReadFull(crand.Reader, index); err != nil {
-		t.Fatal(err)
-	}
-
-	sig := make([]byte, signatureSize)
-	if _, err := io.ReadFull(crand.Reader, sig); err != nil {
-		t.Fatal(err)
-	}
-	return postage.NewStamp(id, index, postage.Timestamp(), sig)
 }

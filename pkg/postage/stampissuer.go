@@ -65,7 +65,6 @@ func toBucket(depth uint8, addr swarm.Address) uint32 {
 }
 
 // indexToBytes creates an uint64 index from
-// - bucket depth (uint8, 1st byte, <24)
 // - bucket index (neighbourhood index, uint32 <2^depth, bytes 2-4)
 // - and the within-bucket index (uint32 <2^(batchdepth-bucketdepth), bytes 5-8)
 func indexToBytes(bucket, index uint32) []byte {
